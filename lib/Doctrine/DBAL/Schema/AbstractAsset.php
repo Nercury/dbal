@@ -217,10 +217,18 @@ abstract class AbstractAsset
      */
     protected function _generateIdentifierName($columnNames, $prefix='', $maxSize=30)
     {
-        $hash = implode("", array_map(function ($column) {
-            return dechex(crc32($column));
+        $hash = implode("__", array_map(function ($column) {
+            return $column;
         }, $columnNames));
 
-        return substr(strtoupper($prefix . "_" . $hash), 0, $maxSize);
+        if ($prefix === 'idx') {
+            $prefix = '';
+            $hash = $columnNames[count($columnNames) - 1];
+        } else {
+            $prefix = $prefix . "_";
+        }
+        $name = strtolower($prefix . $hash);
+
+        return $name;
     }
 }
